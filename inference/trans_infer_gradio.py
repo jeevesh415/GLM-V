@@ -36,7 +36,6 @@ from pathlib import Path
 import fitz
 import gradio as gr
 import spaces
-import torch
 from transformers import (
     AutoProcessor,
     Glm4vForConditionalGeneration,

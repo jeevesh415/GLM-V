@@ -134,7 +134,7 @@ vllm serve zai-org/GLM-4.6V \
      --served-model-name glm-4.6v \
      --allowed-local-media-path / \
      --mm-encoder-tp-mode data \
-     --mm_processor_cache_type shm \
+     --mm_processor_cache_type shm
 ```
 
 For more detail, check [vLLM Recipes](https://github.com/vllm-project/recipes/blob/main/GLM/GLM-V.md).
