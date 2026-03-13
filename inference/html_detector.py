@@ -24,8 +24,7 @@ class HTMLDetector:
             re.compile(r"^<html[\s>]", re.IGNORECASE),
             re.compile(r"^<head[\s>]", re.IGNORECASE),
             re.compile(
-                r"^<bod"
-                r"y[\s>]",
+                r"^<bod" r"y[\s>]",
                 re.IGNORECASE,
             ),
             re.compile(r"^<div[\s>]", re.IGNORECASE),

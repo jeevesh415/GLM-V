@@ -133,8 +133,8 @@ vllm serve zai-org/GLM-4.6V \
      --enable-auto-tool-choice \
      --served-model-name glm-4.6v \
      --allowed-local-media-path / \
-     --mm-encoder-tp-mode data \ 
-     --mm_processor_cache_type shm \ 
+     --mm-encoder-tp-mode data \
+     --mm_processor_cache_type shm \
 ```
 
 For more detail, check [vLLM Recipes](https://github.com/vllm-project/recipes/blob/main/GLM/GLM-V.md).
@@ -156,14 +156,14 @@ Notes:
 
 - We recommend increasing `SGLANG_VLM_CACHE_SIZE_MB` (e.g., `1024`) to provide sufficient cache space for video
   understanding.
-- When using `vLLM` and `SGLang`, thinking mode is enabled by default. To disable the thinking switch, Add:  
+- When using `vLLM` and `SGLang`, thinking mode is enabled by default. To disable the thinking switch, Add:
   `extra_body={"chat_template_kwargs": {"enable_thinking": False}}`
 - You can configure a thinking budget to limit the model’s maximum reasoning span. Add
-  
+
     ```python
   from sglang.srt.sampling.custom_logit_processor import Glm4MoeThinkingBudgetLogitProcessor
     ```
-  
+
   and
 
     ```python
@@ -259,15 +259,15 @@ Supports high-quality mixed media creation from complex multimodal inputs. GLM-4
 
 - **Multimodal Document Understanding**
 GLM-4.6V can process up to 128K tokens of multi-document or long-document input, directly interpreting richly formatted pages as images. It understands text, layout, charts, tables, and figures jointly, enabling accurate comprehension of complex, image-heavy documents without requiring prior conversion to plain text.
-  
+
 - **Frontend Replication & Visual Editing**
 Reconstructs pixel-accurate HTML/CSS from UI screenshots and supports natural-language-driven edits. It detects layout, components, and styles visually, generates clean code, and applies iterative visual modifications through simple user instructions.
 
 ### GLM-4.5V
 
-GLM-4.5V is based on ZhipuAI’s GLM-4.5-Air.  
+GLM-4.5V is based on ZhipuAI’s GLM-4.5-Air.
 It continues the technical approach of GLM-4.1V-Thinking, achieving SOTA performance among models of the same scale on
-42 public vision-language benchmarks.  
+42 public vision-language benchmarks.
 It covers common tasks such as image, video, and document understanding, as well as GUI agent operations.
 
 Beyond benchmark performance, GLM-4.5V focuses on real-world usability. Through efficient hybrid training, it can handle
@@ -286,7 +286,7 @@ reasoning. This switch works the same as in the `GLM-4.5` language model.
 
 Built on the [GLM-4-9B-0414](https://github.com/zai-org/GLM-4) foundation model, the **GLM-4.1V-9B-Thinking** model
 introduces a reasoning paradigm and uses RLCS (Reinforcement Learning with Curriculum Sampling) to comprehensively
-enhance model capabilities.  
+enhance model capabilities.
 It achieves the strongest performance among 10B-level VLMs and matches or surpasses the much larger Qwen-2.5-VL-72B in
 18 benchmark tasks.
 
@@ -303,7 +303,7 @@ Compared with the previous generation CogVLM2 and GLM-4V series, **GLM-4.1V-Thin
 4. A bilingual (Chinese/English) open-source version.
 
 GLM-4.1V-9B-Thinking integrates the **Chain-of-Thought** reasoning mechanism, improving accuracy, richness, and
-interpretability.  
+interpretability.
 It leads on 23 out of 28 benchmark tasks at the 10B parameter scale, and outperforms Qwen-2.5-VL-72B on 18 tasks despite
 its smaller size.
 

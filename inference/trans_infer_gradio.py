@@ -359,8 +359,8 @@ with demo:
                    GLM-4.1V-9B-Thinking Gradio Space🤗
                 </div>
                <div style="text-align: center;">
-               <a href="https://huggingface.co/THUDM/GLM-4.1V-9B-Thinking">🤗 Model Hub</a> | 
-               <a href="https://github.com/THUDM/GLM-4.1V-Thinking">🌐 Github</a> 
+               <a href="https://huggingface.co/THUDM/GLM-4.1V-9B-Thinking">🤗 Model Hub</a> |
+               <a href="https://github.com/THUDM/GLM-4.1V-Thinking">🌐 Github</a>
                 </div>
                 """)
 
