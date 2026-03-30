@@ -1,21 +1,61 @@
 ---
 name: glmv-web-replication
-description: Use Playwright MCP or the agent-browser skill to systematically explore all internal pages of a target website, collect screenshots, interaction logic, and assets, and output a “website replication blueprint” whose folder hierarchy reflects page navigation relationships. Finally, based on the exploration results, fully replicate the entire target website, ensuring the replicated site matches the original in content and structure as strictly as possible.
+description: >
+  Frontend visual replication skill. Explores a target website’s publicly visible pages
+  via Playwright MCP or agent-browser, captures screenshots and layout information,
+  then generates a static or client-side frontend replica that approximates the original’s
+  visual appearance and page structure. This skill replicates FRONTEND PRESENTATION ONLY —
+  it does not reproduce backend logic, server-side behavior, databases, or any
+  non-public content. The user is responsible for ensuring they have proper authorization
+  (ownership, license, or explicit permission) before replicating any website.
+
+  ⚠️ Authorization gate: Before starting, the agent MUST confirm with the user that
+  they have the legal right to replicate the target site. If the user cannot confirm,
+  the skill MUST refuse to proceed.
+
 read_when:
-  - When you need to replicate a target website and keep it as consistent as possible with the original in visual design, content structure, and interactions
-  - When you need to create a high-fidelity replica of a target website
-  - When you need to reconstruct a website’s page structure, visual style, and interaction logic
-  - When you need to rebuild frontend pages based on real webpage content rather than designing from scratch
-  - When you need to preserve the original website’s content, structure, and presentation to the greatest extent possible
+  - When the user wants to create a frontend visual replica of a website they own or have explicit permission to replicate
+  - When the user needs a static/HTML approximation of a website’s visual design and layout
+  - When the user wants to study and reproduce a website’s frontend page structure and styling
 allowed-tools: Bash(glmv-web-replication:*)
 ---
-# Website GUI Exploration, Blueprint Generation, and Replication
+
+# Website Frontend Visual Replication
 
 ## Prerequisites
 This workflow depends on either Playwright MCP or the agent-browser skill. As long as at least one of them is installed and available, the workflow can run normally. If neither is available in your environment, remind the user to install one.
 
+## Authorization Gate (MUST execute first)
+
+Before proceeding, the agent **MUST** ask the user:
+
+> “Do you own this website, or do you have explicit written permission from the owner to replicate it? Unauthorized replication may violate copyright, terms of service, or applicable law.”
+
+- If the user confirms authorization → proceed.
+- If the user cannot confirm → **STOP**. Do not proceed with replication. Suggest alternatives (e.g., building an original design inspired by general layout patterns).
+
+## Scope & Limitations
+
+**This skill replicates FRONTEND VISUAL PRESENTATION only.** Specifically:
+
+| Included | NOT Included |
+|----------|-------------|
+| Page layout & visual styling | Backend / server-side logic |
+| Navigation structure | Databases & data stores |
+| Publicly visible text & images | Authentication systems / sessions |
+| CSS/design tokens | API business logic |
+| Client-side interaction patterns | Non-public or behind-login content |
+| Static asset files (images, fonts) | Credentials, secrets, or API keys |
+
+**Data handling rules:**
+1. **Never scrape behind a login wall.** Only capture publicly accessible pages.
+2. **Never collect or store credentials**, API keys, session tokens, or personal data (PII).
+3. **Never reproduce copyrighted content verbatim** (articles, copy text) unless the user holds rights.
+4. **Respect robots.txt and rate limits.** If the site signals crawl restrictions, honor them.
+5. **Output is for reference & mockup purposes** unless the user has confirmed full rights.
+
 ## Core Idea
-1. Recursively explore every internal page of the target website, systematically record its visual content, interaction logic, and asset files, and finally organize everything into a structured “website replication blueprint.” This blueprint should not only comprehensively include detailed information for each page, but also naturally map the site’s navigation relationships through folder hierarchy. Specifically, during exploration, use nested folders to organize and record the collected page information: represent the current page as a folder, and represent all pages reachable from it as child folders. At the same time, save that page’s screenshots, component interaction records, and related asset files inside the page folder. With this structure, the final blueprint will clearly present both the content and interaction details of each page, while also implicitly reflecting the website’s overall information architecture and navigation paths.
+1. Recursively explore every **public** page of the target website, systematically record its visual content, client-side interaction logic, and publicly available asset files, and organize everything into a structured “website replication blueprint.” This blueprint should comprehensively include detailed information for each page, and naturally map the site’s navigation relationships through folder hierarchy. Specifically, during exploration, use nested folders to organize and record the collected page information: represent the current page as a folder, and represent all pages reachable from it as child folders. At the same time, save that page’s screenshots, component interaction records, and related asset files inside the page folder. With this structure, the final blueprint will clearly present both the content and interaction details of each page, while also implicitly reflecting the website’s overall information architecture and navigation paths.
 
 An example blueprint folder structure:
 ```text
@@ -51,12 +91,12 @@ blueprint/
 └── _navigation_graph.md          # Site-wide navigation graph (Mermaid)
 ```
 
-2. After completing the blueprint construction above, fully replicate the target website based on that blueprint, restoring page-to-page navigation relationships, content presentation, information architecture, page layout, and interaction logic as completely as possible.
+2. After completing the blueprint construction above, build a **frontend visual replica** of the target website based on that blueprint, approximating the original's page-to-page navigation, visual layout, and client-side interaction patterns. This is a frontend-only reproduction and does not include backend behavior replication.
 
 ## Replication Workflow
-The whole process is divided into five phases: initialization → recursively collect pages and build the sitemap → generate summary outputs → fully replicate the website → compare against the original and revise.
+The whole process is divided into five phases: initialization → recursively collect pages and build the sitemap → generate summary outputs → frontend visual replication → visual comparison and revision.
 
-The first three phases focus on exploration and documentation, while the final two phases focus on implementing the actual replication based on the collected blueprint and verifying it. Below, the agent-browser workflow is used as an example; if using Playwright MCP, the overall process and usage are essentially the same and can be followed with the same approach.
+The first three phases focus on exploration and documentation, while the final two phases focus on implementing the frontend replica based on the collected blueprint and visually verifying it. Below, the agent-browser workflow is used as an example; if using Playwright MCP, the overall process and usage are essentially the same and can be followed with the same approach.
 
 ### Step 1: Initialize the project
 ```bash
@@ -236,28 +276,32 @@ graph LR
 agent-browser close
 ```
 
-### Step 4: Replication
-After completing website exploration and blueprint generation, perform the actual replication based on the collected blueprint. During replication, refer to the blueprint’s page structures, visual styles, interaction logic, and asset files, and use your preferred frontend tools and frameworks to rebuild the website. Follow the recorded page structures, visual styles, and interaction behaviors to ensure the replicated site matches the original as closely as possible in presentation.
+### Step 4: Frontend Visual Replication
+After completing website exploration and blueprint generation, build a **frontend visual replica** based on the collected blueprint. During replication, refer to the blueprint’s page structures, visual styles, and publicly available assets, and use your preferred frontend tools and frameworks to rebuild the website’s client-side presentation. The goal is to approximate the original’s visual design and navigation — not to reproduce backend behavior or non-public functionality.
 
-### Step 5: Compare, verify, and revise
-After finishing the replication, use Playwright MCP or the agent-browser skill to render both the original website and the replicated website, systematically compare them for consistency in content, structure, visuals, and interactions, verify the degree of reproduction page by page, and make precise adjustments based on the comparison results to ensure the replicated site remains highly consistent with the original in every aspect.
+### Step 5: Visual Comparison & Revision
+After finishing the frontend replication, use Playwright MCP or the agent-browser skill to render both the original website and the replicated version, systematically compare them for visual consistency in layout, colors, typography, and navigation structure, verify the degree of visual approximation page by page, and make adjustments based on the comparison results.
 
 ## Key Rules
-1. Folders represent navigation relationships. If page A can navigate to page B, then page B should be created as a subfolder inside page A’s folder.
-2. If multiple pages can navigate to the same target page, you may skip redundant exploration of that page and create its folder only once under the most natural parent. However, all navigation sources must still be recorded in `_sitemap.md`, `_navigation_graph.md`, and the related pages’ `_page.md` files.
-3. Every folder must contain:
+1. **Authorization first.** Never begin replication without user confirmation of legal right to replicate.
+2. **Public pages only.** Only explore and capture publicly accessible pages. Do not attempt to access login-protected areas, admin panels, or authenticated endpoints.
+3. **No credential/PII handling.** If any captured content contains credentials, tokens, or personal data, redact or exclude it immediately.
+4. **Frontend only.** Never claim or attempt to replicate backend business logic, database schemas, or server-side behavior.
+5. Folders represent navigation relationships. If page A can navigate to page B, then page B should be created as a subfolder inside page A’s folder.
+6. If multiple pages can navigate to the same target page, you may skip redundant exploration of that page and create its folder only once under the most natural parent. However, all navigation sources must still be recorded in `_sitemap.md`, `_navigation_graph.md`, and the related pages’ `_page.md` files.
+7. Every folder must contain:
    - `_page.md` — page blueprint (sections, components, outbound navigation)
    - `_full.png` — full-page screenshot
    - `_interactions.md` — interaction behavior record
    - `_interactions/` — directory for interaction state screenshots
    - `_assets/` — page-specific assets
    - scrolling screenshot sequence `_scroll_00.png` ~ `_scroll_N.png`
-4. Screenshots must be captured from the real site. Do not describe visual information from memory; all visual details must be based on actual screenshots.
-5. Interactions must be genuinely triggered and recorded one by one, including hover, click, focus, and so on.
-6. Assets should be downloaded whenever possible. Use `curl` to download images, and use `agent-browser eval` or Playwright MCP to extract SVG source code and save it. All failed downloads must be recorded together with the reasons for failure.
-7. Record only; do not evaluate. Accurately document observed results without making quality judgments.
-8. Keep files updated in real time. After finishing exploration of each page window, update the sitemap and all related blueprint files such as `_page.md` and `_interactions.md` so the output always remains synchronized with the current exploration state.
-9. Ensure elements are visible. Before interacting with any page element, make sure the target element is within the visible viewport. Scroll the page or adjust the viewport position if necessary.
-10. Each call to `agent-browser` may execute only one command, such as taking a screenshot, getting the element list, or performing one interaction. Do not combine multiple commands in a single call. The consecutive commands in the example are only for illustrating the workflow; in actual execution they must be split into separate calls.
-11. If interaction with a webpage element triggers navigation to an external domain, there is no need to deeply explore or continue scraping that external page. However, you must record the key information of that external link, including the external URL, the page element that triggered the link (text/button name/selector or ref), and the trigger method (such as click). In the replicated website, the corresponding page element should preserve the same trigger method and external destination.
-12. `_full.png` is used to record the overall visual overview of the page, while the scrolling screenshot sequence (`_scroll_00.png` ~ `_scroll_N.png`) can record details of each segment. During website replication, both the overall information from the full-page screenshot and the detailed information from the scrolling screenshot sequence should be referenced together to ensure accurate visual reproduction and complete detail restoration.
+8. Screenshots must be captured from the real site. Do not describe visual information from memory; all visual details must be based on actual screenshots.
+9. Interactions must be genuinely triggered and recorded one by one, including hover, click, focus, and so on.
+10. Assets should be downloaded whenever possible. Use `curl` to download images, and use `agent-browser eval` or Playwright MCP to extract SVG source code and save it. All failed downloads must be recorded together with the reasons for failure.
+11. Record only; do not evaluate. Accurately document observed results without making quality judgments.
+12. Keep files updated in real time. After finishing exploration of each page window, update the sitemap and all related blueprint files such as `_page.md` and `_interactions.md` so the output always remains synchronized with the current exploration state.
+13. Ensure elements are visible. Before interacting with any page element, make sure the target element is within the visible viewport. Scroll the page or adjust the viewport position if necessary.
+14. Each call to `agent-browser` may execute only one command, such as taking a screenshot, getting the element list, or performing one interaction. Do not combine multiple commands in a single call. The consecutive commands in the example are only for illustrating the workflow; in actual execution they must be split into separate calls.
+15. If interaction with a webpage element triggers navigation to an external domain, there is no need to deeply explore or continue scraping that external page. However, you must record the key information of that external link, including the external URL, the page element that triggered the link (text/button name/selector or ref), and the trigger method (such as click). In the replicated website, the corresponding page element should preserve the same trigger method and external destination.
+16. `_full.png` is used to record the overall visual overview of the page, while the scrolling screenshot sequence (`_scroll_00.png` ~ `_scroll_N.png`) can record details of each segment. During website replication, both the overall information from the full-page screenshot and the detailed information from the scrolling screenshot sequence should be referenced together to ensure accurate visual reproduction and complete detail restoration.
