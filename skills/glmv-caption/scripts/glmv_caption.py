@@ -14,17 +14,17 @@ Vision model enum: glm-4.6v, autoglm-phone, glm-4.6v-flash, glm-4.6v-flashx, glm
 - Files: URL only (no local path, no base64), pdf/txt/docx/jsonl/xlsx/pptx, up to 50 files
 """
 
-import os
-import json
-import base64
 import argparse
+import base64
+import json
+import os
 import sys
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 
 import requests
 
-DEFAULT_MODEL = "glm-4.6v"
+DEFAULT_MODEL = "glm-5v-turbo"
 DEFAULT_PROMPT = "请详细描述这张图片的内容"
 API_BASE_URL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
